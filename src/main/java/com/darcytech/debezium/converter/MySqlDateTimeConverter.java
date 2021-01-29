@@ -7,9 +7,8 @@ import org.apache.kafka.connect.data.SchemaBuilder;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 /**
  * 处理Debezium时间转换的问题
@@ -28,34 +27,31 @@ import java.util.Properties;
 @Slf4j
 public class MySqlDateTimeConverter implements CustomConverter<SchemaBuilder, RelationalColumn> {
 
-    private Map<String, DateTimeFormatter> typeFormatterMap = buildDefaultMap();
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_TIME;
+    private DateTimeFormatter datetimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
+    private DateTimeFormatter timestampFormatter = DateTimeFormatter.ISO_DATE_TIME;
 
-    private static Map<String, DateTimeFormatter> buildDefaultMap() {
-        HashMap<String, DateTimeFormatter> map = new HashMap<>();
-        map.put("DATE", DateTimeFormatter.ISO_DATE);
-        map.put("TIME", DateTimeFormatter.ISO_TIME);
-        map.put("DATETIME", DateTimeFormatter.ISO_DATE_TIME);
-        map.put("TIMESTAMP", DateTimeFormatter.ISO_DATE_TIME);
-        return map;
-    }
+    private ZoneId timestampZoneId = ZoneId.systemDefault();
 
     @Override
     public void configure(Properties props) {
-        setFormatterIfNeed(props, "format.date", "DATE");
-        setFormatterIfNeed(props, "format.time", "TIME");
-        setFormatterIfNeed(props, "format.datetime", "DATETIME");
-        setFormatterIfNeed(props, "format.timestamp", "TIMESTAMP");
+        readProps(props, "format.date", p -> dateFormatter = DateTimeFormatter.ofPattern(p));
+        readProps(props, "format.time", p -> timeFormatter = DateTimeFormatter.ofPattern(p));
+        readProps(props, "format.datetime", p -> datetimeFormatter = DateTimeFormatter.ofPattern(p));
+        readProps(props, "format.timestamp", p -> timestampFormatter = DateTimeFormatter.ofPattern(p));
+        readProps(props, "format.timestamp.zone", z -> timestampZoneId = ZoneId.of(z));
     }
 
-    private void setFormatterIfNeed(Properties properties, String settingKey, String sqlType) {
-        String formatPattern = (String) properties.get(settingKey);
-        if (formatPattern == null || formatPattern.length() == 0) {
+    private void readProps(Properties properties, String settingKey, Consumer<String> callback) {
+        String settingValue = (String) properties.get(settingKey);
+        if (settingValue == null || settingValue.length() == 0) {
             return;
         }
         try {
-            typeFormatterMap.replace(sqlType, DateTimeFormatter.ofPattern(formatPattern));
-        } catch (IllegalArgumentException e) {
-            log.error("The {} setting used to process the {} type is illegal:{}", settingKey, sqlType, formatPattern);
+            callback.accept(settingValue);
+        } catch (IllegalArgumentException | DateTimeException e) {
+            log.error("The \"{}\" setting is illegal:{}", settingKey, settingValue);
             throw e;
         }
     }
@@ -63,9 +59,6 @@ public class MySqlDateTimeConverter implements CustomConverter<SchemaBuilder, Re
     @Override
     public void converterFor(RelationalColumn column, ConverterRegistration<SchemaBuilder> registration) {
         String sqlType = column.typeName().toUpperCase();
-        if (!typeFormatterMap.containsKey(sqlType)) {
-            return;
-        }
         if (sqlType.equals("DATE")) {
             registration.register(SchemaBuilder.string().optional().name("com.darcytech.debezium.date.string"), this::convertDate);
         }
@@ -82,11 +75,11 @@ public class MySqlDateTimeConverter implements CustomConverter<SchemaBuilder, Re
 
     private String convertDate(Object input) {
         if (input instanceof LocalDate) {
-            return typeFormatterMap.get("DATE").format((LocalDate) input);
+            return dateFormatter.format((LocalDate) input);
         }
         if (input instanceof Integer) {
             LocalDate date = LocalDate.ofEpochDay((Integer) input);
-            return typeFormatterMap.get("DATE").format(date);
+            return dateFormatter.format(date);
         }
         return null;
     }
@@ -97,22 +90,24 @@ public class MySqlDateTimeConverter implements CustomConverter<SchemaBuilder, Re
             long seconds = duration.getSeconds();
             int nano = duration.getNano();
             LocalTime time = LocalTime.ofSecondOfDay(seconds).withNano(nano);
-            return typeFormatterMap.get("TIME").format(time);
+            return timeFormatter.format(time);
         }
         return null;
     }
 
     private String convertDateTime(Object input) {
         if (input instanceof LocalDateTime) {
-            return typeFormatterMap.get("DATETIME").format((LocalDateTime) input);
+            return datetimeFormatter.format((LocalDateTime) input);
         }
         return null;
     }
 
     private String convertTimestamp(Object input) {
         if (input instanceof ZonedDateTime) {
+            // mysql的timestamp会转成UTC存储，这里的zonedDatetime都是UTC时间
             ZonedDateTime zonedDateTime = (ZonedDateTime) input;
-            return typeFormatterMap.get("TIMESTAMP").format(zonedDateTime.toLocalDateTime());
+            LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(timestampZoneId).toLocalDateTime();
+            return timestampFormatter.format(localDateTime);
         }
         return null;
     }
