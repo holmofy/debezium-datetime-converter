@@ -49,7 +49,7 @@ public class MySqlDateTimeConverter implements CustomConverter<SchemaBuilder, Re
             return;
         }
         try {
-            callback.accept(settingValue);
+            callback.accept(settingValue.trim());
         } catch (IllegalArgumentException | DateTimeException e) {
             log.error("The \"{}\" setting is illegal:{}", settingKey, settingValue);
             throw e;
