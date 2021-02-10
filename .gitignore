@@ -1,1 +1,8 @@
+.DS_Store
 .idea/
+.vscode/
+.settings/
+target/
+.classpath
+.factorypath
+.project
