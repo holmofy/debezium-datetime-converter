@@ -7,3 +7,16 @@ Debezium custom converter is used to deal with mysql datetime type problems
 | time<br/>(17:29:04)                 | Duration<br/>(PT17H29M4S)                | Long<br/>(62944000000)            | ((Duration) data).toNanos() / 1_000 |
 | timestamp<br/>(2021-01-28 17:29:04) | ZonedDateTime<br/>(2021-01-28T09:29:04Z) | String<br/>(2021-01-28T09:29:04Z) | io.debezium.time.ZonedTimestamp     |
 | Datetime<br/>(2021-01-28 17:29:04)  | LocalDateTime<br/>(2021-01-28T17:29:04)  | Long<br/>(1611854944000)          | io.debezium.time.Timestamp          |
+
+
+# Uage
+
+```properties
+converters=datetime
+datetime.type=com.darcytech.debezium.converter.MySqlDateTimeConverter
+datetime.format.date=YYYY-MM-dd
+datetime.format.time=HH:mm:ss
+datetime.format.datetime=YYYY-MM-dd HH:mm:ss
+datetime.format.timestamp=YYYY-MM-dd HH:mm:ss
+datetime.format.timestamp.zone=UTC+8
+```
