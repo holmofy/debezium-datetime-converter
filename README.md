@@ -14,9 +14,9 @@ Debezium custom converter is used to deal with mysql datetime type problems
 ```properties
 converters=datetime
 datetime.type=com.darcytech.debezium.converter.MySqlDateTimeConverter
-datetime.format.date=YYYY-MM-dd
+datetime.format.date=yyyy-MM-dd
 datetime.format.time=HH:mm:ss
-datetime.format.datetime=YYYY-MM-dd HH:mm:ss
-datetime.format.timestamp=YYYY-MM-dd HH:mm:ss
+datetime.format.datetime=yyyy-MM-dd HH:mm:ss
+datetime.format.timestamp=yyyy-MM-dd HH:mm:ss
 datetime.format.timestamp.zone=UTC+8
 ```
