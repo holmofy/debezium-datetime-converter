@@ -1,5 +1,5 @@
 # debezium-datetime-converter
-Debezium custom converter is used to deal with mysql datetime type problems
+Debezium custom converter is used to deal with mysql [datetime type problems](https://debezium.io/documentation/reference/1.5/connectors/mysql.html#mysql-temporal-types)
 
 | mysql                               | binlog-connector                         | debezium                          | debezium<br />schema                 |
 | ----------------------------------- | ---------------------------------------- | --------------------------------- | ----------------------------------- |
