@@ -59,17 +59,27 @@ public class MySqlDateTimeConverter implements CustomConverter<SchemaBuilder, Re
     @Override
     public void converterFor(RelationalColumn column, ConverterRegistration<SchemaBuilder> registration) {
         String sqlType = column.typeName().toUpperCase();
-        if (sqlType.equals("DATE")) {
-            registration.register(SchemaBuilder.string().optional().name("com.darcytech.debezium.date.string"), this::convertDate);
+        SchemaBuilder schemaBuilder = null;
+        Converter converter = null;
+        if ("DATE".equals(sqlType)) {
+            schemaBuilder = SchemaBuilder.string().optional().name("com.darcytech.debezium.date.string");
+            converter = this::convertDate;
         }
-        if (sqlType.equals("TIME")) {
-            registration.register(SchemaBuilder.string().optional().name("com.darcytech.debezium.time.string"), this::convertTime);
+        if ("TIME".equals(sqlType)) {
+            schemaBuilder = SchemaBuilder.string().optional().name("com.darcytech.debezium.time.string");
+            converter = this::convertTime;
         }
-        if (sqlType.equals("DATETIME")) {
-            registration.register(SchemaBuilder.string().optional().name("com.darcytech.debezium.datetime.string"), this::convertDateTime);
+        if ("DATETIME".equals(sqlType)) {
+            schemaBuilder = SchemaBuilder.string().optional().name("com.darcytech.debezium.datetime.string");
+            converter = this::convertDateTime;
         }
-        if (sqlType.equals("TIMESTAMP")) {
-            registration.register(SchemaBuilder.string().optional().name("com.darcytech.debezium.timestamp.string"), this::convertTimestamp);
+        if ("TIMESTAMP".equals(sqlType)) {
+            schemaBuilder = SchemaBuilder.string().optional().name("com.darcytech.debezium.timestamp.string");
+            converter = this::convertTimestamp;
+        }
+        if (schemaBuilder != null) {
+            registration.register(schemaBuilder, converter);
+            log.info("register converter for sqlType {} to schema {}", sqlType, schemaBuilder.name());
         }
     }
 
