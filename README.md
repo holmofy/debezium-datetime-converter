@@ -16,7 +16,11 @@ Debezium [custom converter](https://debezium.io/documentation/reference/developm
 
 # Uage
 
-In debezium-connector, Add the following configuration: 
+1. [Download](https://github.com/holmofy/debezium-datetime-converter/releases) the extended jar package.
+
+2. Add to the same level directory of the debezium plugin.
+
+3. In debezium-connector, Add the following configuration: 
 
 ```properties
 connector.class=io.debezium.connector.mysql.MySqlConnector
