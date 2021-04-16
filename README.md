@@ -3,6 +3,7 @@
 ![Build Status(https://github.com/holmofy/debezium-datetime-converter/actions/workflows/release.yml/badge.svg)](https://github.com/holmofy/debezium-datetime-converter/actions/workflows/release.yml/badge.svg)
 
 # debezium-datetime-converter
+
 Debezium [custom converter](https://debezium.io/documentation/reference/development/converters.html) is used to deal with mysql [datetime type problems](https://debezium.io/documentation/reference/1.5/connectors/mysql.html#mysql-temporal-types)
 
 | mysql                               | binlog-connector                         | debezium                          | debezium<br />schema                 |
@@ -14,6 +15,8 @@ Debezium [custom converter](https://debezium.io/documentation/reference/developm
 
 
 # Uage
+
+In debezium-connector, Add the following configuration: 
 
 ```properties
 connector.class=io.debezium.connector.mysql.MySqlConnector
