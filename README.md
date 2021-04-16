@@ -1,5 +1,7 @@
+![Debezium architecture](https://debezium.io/documentation/reference/1.4/_images/debezium-server-architecture.png)
+
 # debezium-datetime-converter
-Debezium custom converter is used to deal with mysql [datetime type problems](https://debezium.io/documentation/reference/1.5/connectors/mysql.html#mysql-temporal-types)
+Debezium [custom converter](https://debezium.io/documentation/reference/development/converters.html) is used to deal with mysql [datetime type problems](https://debezium.io/documentation/reference/1.5/connectors/mysql.html#mysql-temporal-types)
 
 | mysql                               | binlog-connector                         | debezium                          | debezium<br />schema                 |
 | ----------------------------------- | ---------------------------------------- | --------------------------------- | ----------------------------------- |
@@ -12,6 +14,8 @@ Debezium custom converter is used to deal with mysql [datetime type problems](ht
 # Uage
 
 ```properties
+connector.class=io.debezium.connector.mysql.MySqlConnector
+# ...
 converters=datetime
 datetime.type=com.darcytech.debezium.converter.MySqlDateTimeConverter
 datetime.format.date=yyyy-MM-dd
