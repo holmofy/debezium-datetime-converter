@@ -14,7 +14,7 @@ Debezium [custom converter](https://debezium.io/documentation/reference/developm
 | Datetime<br/>(2021-01-28 17:29:04)  | LocalDateTime<br/>(2021-01-28T17:29:04)  | Long<br/>(1611854944000)          | io.debezium.time.Timestamp          |
 
 
-# Uage
+# Usage
 
 1. [Download](https://github.com/holmofy/debezium-datetime-converter/releases) the extended jar package and put it in the same level directory of the debezium plugin.
 
