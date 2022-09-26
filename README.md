@@ -1,3 +1,5 @@
+**Note: debezium has been upgraded and the repository is no longer maintained**
+
 [![Debezium architecture](https://debezium.io/documentation/reference/1.4/_images/debezium-architecture.png)](https://debezium.io/documentation/reference/1.4/connectors/mysql.html)
 
 [![Build Status(https://github.com/holmofy/debezium-datetime-converter/actions/workflows/release.yml/badge.svg)](https://github.com/holmofy/debezium-datetime-converter/actions/workflows/release.yml/badge.svg)](https://github.com/holmofy/debezium-datetime-converter/releases)
