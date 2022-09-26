@@ -13,7 +13,7 @@ Debezium [custom converter](https://debezium.io/documentation/reference/developm
 | timestamp<br/>(2021-01-28 17:29:04) | ZonedDateTime<br/>(2021-01-28T09:29:04Z) | String<br/>(2021-01-28T09:29:04Z) | io.debezium.time.ZonedTimestamp     |
 | Datetime<br/>(2021-01-28 17:29:04)  | LocalDateTime<br/>(2021-01-28T17:29:04)  | Long<br/>(1611854944000)          | io.debezium.time.Timestamp          |
 
-> For details, please refer to [this article](https://blog.hufeifei.cn/2021/03/13/DB/mysql-binlog-parser/)
+> For details, please refer to [this article](https://blog.hufeifei.cn/2021/03/DB/mysql-binlog-parser/)
 
 # Usage
 
